@@ -1,0 +1,13 @@
+CHIARA – SYMPTOMTAGEBUCH
+
+Die App muss über eine Webadresse geöffnet werden. Lokale HTML-Dateien in der iPhone-/iPad-Dateivorschau erlauben keine Bedienung.
+
+Einfachste Veröffentlichung mit GitHub Pages:
+1. Kostenloses Konto auf github.com anlegen.
+2. Neues Repository erstellen, z. B. "chiara-symptomtagebuch".
+3. Alle Dateien aus diesem ZIP hochladen.
+4. Settings > Pages > Deploy from a branch > main / root auswählen.
+5. Die angezeigte Webadresse in Safari öffnen.
+6. Teilen > Zum Home-Bildschirm.
+
+Die Einträge werden ausschließlich lokal im Browser des verwendeten Geräts gespeichert.
