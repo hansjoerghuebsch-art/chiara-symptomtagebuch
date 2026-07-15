@@ -13,27 +13,37 @@
 <style>
 :root{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color-scheme:light}
 *{box-sizing:border-box}
-body{margin:0;background:#f4f5f7;color:#121212}
-main{max-width:620px;margin:auto;padding:18px 16px 44px}
-h1{font-size:27px;margin:6px 0 2px}.sub{color:#666;margin-bottom:16px}
+body{margin:0;background:#f4f5f7;color:#111}
+main{max-width:680px;margin:auto;padding:18px 16px 48px}
+h1{font-size:28px;margin:6px 0 2px}.sub{color:#666;margin-bottom:16px}
+.tabs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
+.tab{border:1px solid #d9dce2;background:#fff;border-radius:14px;padding:11px 8px;font-weight:700}
+.tab.active{background:#111;color:#fff;border-color:#111}
+.panel{display:none}.panel.active{display:block}
 .card{background:#fff;border-radius:20px;padding:16px;margin:12px 0;box-shadow:0 4px 18px rgba(0,0,0,.06)}
 .label{display:block;font-weight:800;margin-bottom:11px;font-size:17px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.choice{border:1px solid #d8dce2;background:#fff;border-radius:15px;padding:14px 10px;font-size:17px}
+.choice{border:1px solid #d8dce2;background:#fff;border-radius:15px;padding:14px 10px;font-size:16px}
 .choice.active{border:2px solid #111;background:#eef0f3;font-weight:800}
-textarea,input{width:100%;font:inherit;border:1px solid #d8dce2;border-radius:14px;padding:12px;background:#fff}
-textarea{min-height:84px;resize:vertical}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.primary,.secondary{width:100%;border-radius:16px;padding:15px;font-size:18px}
+.scale{display:grid;grid-template-columns:repeat(6,1fr);gap:7px}
+.scale .choice{padding:11px 3px}
+textarea,input,select{width:100%;font:inherit;border:1px solid #d8dce2;border-radius:14px;padding:12px;background:#fff}
+textarea{min-height:86px;resize:vertical}
+.primary,.secondary,.danger{width:100%;border-radius:16px;padding:15px;font-size:17px}
 .primary{border:0;background:#111;color:#fff;font-weight:850}
 .secondary{border:1px solid #bbb;background:#fff;margin-top:10px}
+.danger{border:1px solid #d66;background:#fff;margin-top:10px}
 .ok{display:none;text-align:center;background:#eaf7ee;border-radius:13px;padding:11px;margin-top:10px;font-weight:700}
-.entry{padding:12px 0;border-top:1px solid #ececec}
+.entry{padding:13px 0;border-top:1px solid #ececec}
 .entry:first-child{border-top:0}
-.small{font-size:14px;color:#555}
-.badge{display:inline-block;padding:3px 8px;border-radius:999px;background:#eef0f3;margin:2px 3px 2px 0}
-.notice{font-size:13px;color:#666;line-height:1.4}
-@media(max-width:420px){.grid,.row{grid-template-columns:1fr 1fr}.choice{font-size:16px}}
+.small{font-size:14px;color:#555}.badge{display:inline-block;padding:3px 8px;border-radius:999px;background:#eef0f3;margin:2px 3px 2px 0}
+.notice{font-size:13px;color:#666;line-height:1.45}
+.metric{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.metric .box{background:#f3f4f6;border-radius:15px;padding:14px;text-align:center}
+.metric strong{font-size:24px;display:block}
+canvas{width:100%;height:230px;background:#fff;border-radius:14px}
+.report{white-space:pre-wrap;background:#f5f6f8;border-radius:14px;padding:14px;font-size:14px;line-height:1.45}
+@media(max-width:430px){.scale{grid-template-columns:repeat(3,1fr)}}
 </style>
 </head>
 <body>
@@ -41,39 +51,69 @@ textarea{min-height:84px;resize:vertical}
 <h1>Chiara – Symptomtagebuch</h1>
 <div class="sub" id="now"></div>
 
+<div class="tabs">
+<button class="tab active" data-tab="neu">Neuer Eintrag</button>
+<button class="tab" data-tab="verlauf">Verlauf</button>
+<button class="tab" data-tab="bericht">Arztbericht</button>
+</div>
+
+<section class="panel active" id="neu">
+
 <div class="card">
-<span class="label">Druckgefühl auf der Brust</span>
-<div class="grid" data-group="druck">
-<button class="choice" data-value="Kein">Kein</button>
-<button class="choice" data-value="Leicht">Leicht</button>
-<button class="choice" data-value="Mittel">Mittel</button>
-<button class="choice" data-value="Stark">Stark</button>
+<span class="label">Brustdruck (0–10)</span>
+<div class="scale" data-group="druck">
+<button class="choice" data-value="0">0</button><button class="choice" data-value="2">2</button>
+<button class="choice" data-value="4">4</button><button class="choice" data-value="6">6</button>
+<button class="choice" data-value="8">8</button><button class="choice" data-value="10">10</button>
+</div>
+</div>
+
+<div class="card">
+<span class="label">Schwindel</span>
+<div class="grid" data-group="schwindel">
+<button class="choice" data-value="Nein">Nein</button><button class="choice" data-value="Ja">Ja</button>
 </div>
 </div>
 
 <div class="card">
 <span class="label">Begleitsymptome</span>
 <div class="grid multi" data-group="begleit">
-<button class="choice" data-value="Schwindel">Schwindel</button>
 <button class="choice" data-value="Herzrasen">Herzrasen</button>
 <button class="choice" data-value="Herzstolpern">Herzstolpern</button>
 <button class="choice" data-value="Atemnot">Atemnot</button>
 <button class="choice" data-value="Kopfschmerz">Kopfschmerz</button>
+<button class="choice" data-value="Taubheit Bein/Fuß">Taubheit Bein/Fuß</button>
+<button class="choice" data-value="Schwäche Bein/Fuß">Schwäche Bein/Fuß</button>
 <button class="choice" data-value="Keine">Keine</button>
+</div>
+</div>
+
+<div class="card">
+<span class="label">Müdigkeit (0–10)</span>
+<div class="scale" data-group="muedigkeit">
+<button class="choice" data-value="0">0</button><button class="choice" data-value="2">2</button>
+<button class="choice" data-value="4">4</button><button class="choice" data-value="6">6</button>
+<button class="choice" data-value="8">8</button><button class="choice" data-value="10">10</button>
+</div>
+</div>
+
+<div class="card">
+<span class="label">Periode / Regelschmerzen</span>
+<div class="grid" data-group="periode">
+<button class="choice" data-value="Keine Periode">Keine Periode</button>
+<button class="choice" data-value="Periode, keine Schmerzen">Periode, keine Schmerzen</button>
+<button class="choice" data-value="Periode, leichte Schmerzen">Leichte Schmerzen</button>
+<button class="choice" data-value="Periode, starke Schmerzen">Starke Schmerzen</button>
 </div>
 </div>
 
 <div class="card">
 <span class="label">Situation</span>
 <div class="grid" data-group="situation">
-<button class="choice" data-value="Sitzen">Sitzen</button>
-<button class="choice" data-value="Bus">Bus</button>
-<button class="choice" data-value="Schule">Schule</button>
-<button class="choice" data-value="Sport">Sport</button>
-<button class="choice" data-value="Gehen">Gehen</button>
-<button class="choice" data-value="Liegen">Liegen</button>
-<button class="choice" data-value="Aufgestanden">Aufgestanden</button>
-<button class="choice" data-value="Sonstiges">Sonstiges</button>
+<button class="choice" data-value="Sitzen">Sitzen</button><button class="choice" data-value="Bus">Bus</button>
+<button class="choice" data-value="Schule">Schule</button><button class="choice" data-value="Sport">Sport</button>
+<button class="choice" data-value="Gehen">Gehen</button><button class="choice" data-value="Liegen">Liegen</button>
+<button class="choice" data-value="Aufgestanden">Aufgestanden</button><button class="choice" data-value="Sonstiges">Sonstiges</button>
 </div>
 </div>
 
@@ -99,14 +139,39 @@ textarea{min-height:84px;resize:vertical}
 
 <button class="primary" id="save">Eintrag speichern</button>
 <div class="ok" id="ok">Eintrag gespeichert ✓</div>
+</section>
+
+<section class="panel" id="verlauf">
+<div class="card">
+<span class="label">Übersicht</span>
+<div class="metric">
+<div class="box"><strong id="count">0</strong>Einträge</div>
+<div class="box"><strong id="avgPressure">0</strong>Ø Brustdruck</div>
+</div>
+</div>
+
+<div class="card">
+<span class="label">Brustdruck-Verlauf</span>
+<canvas id="chart" width="640" height="230"></canvas>
+</div>
 
 <div class="card">
 <span class="label">Gespeicherte Einträge</span>
 <div id="entries" class="small">Noch keine Einträge.</div>
 <button class="secondary" id="share">Letzten Eintrag teilen</button>
 <button class="secondary" id="export">Alle Einträge als CSV exportieren</button>
-<button class="secondary" id="clear">Alle Einträge löschen</button>
+<button class="danger" id="clear">Alle Einträge löschen</button>
 </div>
+</section>
+
+<section class="panel" id="bericht">
+<div class="card">
+<span class="label">Arztbericht</span>
+<div id="report" class="report">Noch keine Einträge vorhanden.</div>
+<button class="secondary" id="copyReport">Bericht kopieren</button>
+<button class="secondary" id="shareReport">Bericht teilen</button>
+</div>
+</section>
 
 <div class="notice">
 Die Daten bleiben nur auf diesem Gerät gespeichert. Bei Ohnmacht, anhaltendem Brustdruck, deutlicher Atemnot oder neuen neurologischen Ausfällen bitte sofort medizinische Hilfe holen.
@@ -114,7 +179,30 @@ Die Daten bleiben nur auf diesem Gerät gespeichert. Bei Ohnmacht, anhaltendem B
 </main>
 
 <script>
+const KEY='chiaraEntriesV3';
 const state={begleit:[]};
+
+function migrate(){
+  if(localStorage.getItem(KEY)) return;
+  const old=JSON.parse(localStorage.getItem('chiaraEntriesV2')||'[]');
+  if(old.length){
+    const converted=old.map(e=>({
+      datum:e.datum,
+      timestamp:Date.parse(e.datum)||Date.now(),
+      druck:({Kein:0,Leicht:2,Mittel:6,Stark:10}[e.druck]??e.druck??0),
+      schwindel:(e.begleit||[]).includes('Schwindel')?'Ja':'Nein',
+      begleit:(e.begleit||[]).filter(x=>x!=='Schwindel'),
+      muedigkeit:'',
+      periode:'',
+      situation:e.situation||'',
+      dauer:e.dauer||'',
+      puls:e.puls||'',
+      notiz:e.notiz||''
+    }));
+    localStorage.setItem(KEY,JSON.stringify(converted));
+  }
+}
+migrate();
 
 function nowText(){
   document.getElementById('now').textContent =
@@ -122,95 +210,158 @@ function nowText(){
 }
 nowText(); setInterval(nowText,30000);
 
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+  t.classList.add('active'); document.getElementById(t.dataset.tab).classList.add('active');
+  if(t.dataset.tab==='verlauf'||t.dataset.tab==='bericht') renderAll();
+});
+
 document.querySelectorAll('[data-group]').forEach(group=>{
   const multi=group.classList.contains('multi');
   group.querySelectorAll('.choice').forEach(btn=>{
-    btn.addEventListener('click',()=>{
+    btn.onclick=()=>{
       const key=group.dataset.group;
       if(multi){
         if(btn.dataset.value==='Keine'){
           group.querySelectorAll('.choice').forEach(b=>b.classList.remove('active'));
           btn.classList.add('active'); state[key]=['Keine'];
-        } else {
+        }else{
           group.querySelector('[data-value="Keine"]')?.classList.remove('active');
           btn.classList.toggle('active');
           state[key]=[...group.querySelectorAll('.choice.active')].map(b=>b.dataset.value);
         }
-      } else {
+      }else{
         group.querySelectorAll('.choice').forEach(b=>b.classList.remove('active'));
         btn.classList.add('active'); state[key]=btn.dataset.value;
       }
-    });
+    };
   });
 });
 
-const getEntries=()=>JSON.parse(localStorage.getItem('chiaraEntriesV2')||'[]');
-const setEntries=e=>localStorage.setItem('chiaraEntriesV2',JSON.stringify(e));
-const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
-
-function render(){
-  const entries=getEntries(), box=document.getElementById('entries');
-  if(!entries.length){box.innerHTML='Noch keine Einträge.';return}
-  box.innerHTML=entries.slice().reverse().map(e=>`
-    <div class="entry">
-      <strong>${esc(e.datum)}</strong><br>
-      <span class="badge">Brustdruck: ${esc(e.druck||'–')}</span>
-      <span class="badge">Dauer: ${esc(e.dauer||'–')}</span><br>
-      <span class="badge">Situation: ${esc(e.situation||'–')}</span>
-      <span class="badge">Begleitend: ${esc((e.begleit||[]).join(', ')||'–')}</span>
-      ${e.puls?`<br>Puls: ${esc(e.puls)} /min`:''}
-      ${e.notiz?`<br>Notiz: ${esc(e.notiz)}`:''}
-    </div>`).join('');
-}
+const getEntries=()=>JSON.parse(localStorage.getItem(KEY)||'[]');
+const setEntries=e=>localStorage.setItem(KEY,JSON.stringify(e));
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
 
 function resetForm(){
   document.querySelectorAll('.choice').forEach(b=>b.classList.remove('active'));
   document.getElementById('puls').value='';
   document.getElementById('notiz').value='';
-  Object.keys(state).forEach(k=>delete state[k]);
-  state.begleit=[];
+  Object.keys(state).forEach(k=>delete state[k]); state.begleit=[];
 }
 
-document.getElementById('save').addEventListener('click',()=>{
-  const entry={
+document.getElementById('save').onclick=()=>{
+  const e={
     datum:new Date().toLocaleString('de-DE'),
-    druck:state.druck||'',
+    timestamp:Date.now(),
+    druck:Number(state.druck??0),
+    schwindel:state.schwindel||'',
     begleit:state.begleit||[],
+    muedigkeit:state.muedigkeit||'',
+    periode:state.periode||'',
     situation:state.situation||'',
     dauer:state.dauer||'',
     puls:document.getElementById('puls').value.trim(),
     notiz:document.getElementById('notiz').value.trim()
   };
-  const entries=getEntries(); entries.push(entry); setEntries(entries);
-  render(); resetForm();
+  const entries=getEntries(); entries.push(e); setEntries(entries);
+  resetForm(); renderAll();
   const ok=document.getElementById('ok'); ok.style.display='block';
   setTimeout(()=>ok.style.display='none',1700);
-});
+};
 
-document.getElementById('export').addEventListener('click',()=>{
-  const rows=[['Datum','Brustdruck','Begleitsymptome','Situation','Dauer','Puls','Notiz'],
-    ...getEntries().map(e=>[e.datum,e.druck,(e.begleit||[]).join(', '),e.situation,e.dauer,e.puls,e.notiz])];
+function renderEntries(){
+  const a=getEntries(), box=document.getElementById('entries');
+  if(!a.length){box.innerHTML='Noch keine Einträge.';return}
+  box.innerHTML=a.slice().reverse().map(e=>`
+  <div class="entry"><strong>${esc(e.datum)}</strong><br>
+  <span class="badge">Brustdruck ${esc(e.druck)}/10</span>
+  <span class="badge">Schwindel: ${esc(e.schwindel||'–')}</span>
+  <span class="badge">Müdigkeit: ${esc(e.muedigkeit||'–')}</span><br>
+  <span class="badge">Situation: ${esc(e.situation||'–')}</span>
+  <span class="badge">Dauer: ${esc(e.dauer||'–')}</span>
+  ${e.periode?`<br><span class="badge">${esc(e.periode)}</span>`:''}
+  ${(e.begleit||[]).length?`<br>Begleitend: ${esc((e.begleit||[]).join(', '))}`:''}
+  ${e.puls?`<br>Puls: ${esc(e.puls)} /min`:''}
+  ${e.notiz?`<br>Notiz: ${esc(e.notiz)}`:''}
+  </div>`).join('');
+}
+
+function drawChart(){
+  const c=document.getElementById('chart'),ctx=c.getContext('2d'),a=getEntries().slice(-20);
+  ctx.clearRect(0,0,c.width,c.height);
+  ctx.strokeStyle='#bbb'; ctx.lineWidth=1;
+  for(let y=0;y<=10;y+=2){const py=20+(10-y)*(c.height-40)/10;ctx.beginPath();ctx.moveTo(35,py);ctx.lineTo(c.width-15,py);ctx.stroke();ctx.fillStyle='#666';ctx.fillText(y,10,py+4)}
+  if(!a.length){ctx.fillStyle='#666';ctx.fillText('Noch keine Daten',c.width/2-45,c.height/2);return}
+  ctx.strokeStyle='#111';ctx.lineWidth=3;ctx.beginPath();
+  a.forEach((e,i)=>{const x=40+i*(c.width-60)/Math.max(1,a.length-1);const y=20+(10-Number(e.druck||0))*(c.height-40)/10;i?ctx.lineTo(x,y):ctx.moveTo(x,y)});
+  ctx.stroke();
+}
+
+function makeReport(){
+  const a=getEntries();
+  if(!a.length) return 'Noch keine Einträge vorhanden.';
+  const recent=a.slice(-30);
+  const avg=(recent.reduce((s,e)=>s+Number(e.druck||0),0)/recent.length).toFixed(1);
+  const dizzy=recent.filter(e=>e.schwindel==='Ja').length;
+  const strong=recent.filter(e=>Number(e.druck)>=6).length;
+  const situations={}; recent.forEach(e=>{if(e.situation)situations[e.situation]=(situations[e.situation]||0)+1});
+  const top=Object.entries(situations).sort((a,b)=>b[1]-a[1]).slice(0,3).map(x=>`${x[0]} (${x[1]})`).join(', ')||'keine Angabe';
+  const last=recent.at(-1);
+  return `Symptomtagebuch Chiara
+
+Zeitraum: ${recent[0].datum} bis ${last.datum}
+Anzahl Einträge: ${recent.length}
+Durchschnittlicher Brustdruck: ${avg}/10
+Episoden mit Schwindel: ${dizzy}
+Episoden mit Brustdruck ab 6/10: ${strong}
+Häufigste Situationen: ${top}
+
+Letzter Eintrag:
+${last.datum}
+Brustdruck: ${last.druck}/10
+Schwindel: ${last.schwindel||'–'}
+Begleitsymptome: ${(last.begleit||[]).join(', ')||'–'}
+Müdigkeit: ${last.muedigkeit||'–'}/10
+Periode/Regelschmerzen: ${last.periode||'–'}
+Situation: ${last.situation||'–'}
+Dauer: ${last.dauer||'–'}
+Puls: ${last.puls||'–'}
+Notiz: ${last.notiz||'–'}`;
+}
+
+function renderAll(){
+  const a=getEntries();
+  document.getElementById('count').textContent=a.length;
+  document.getElementById('avgPressure').textContent=a.length?(a.reduce((s,e)=>s+Number(e.druck||0),0)/a.length).toFixed(1):'0';
+  renderEntries(); drawChart(); document.getElementById('report').textContent=makeReport();
+}
+renderAll();
+
+document.getElementById('export').onclick=()=>{
+  const rows=[['Datum','Brustdruck 0-10','Schwindel','Begleitsymptome','Müdigkeit 0-10','Periode/Regelschmerzen','Situation','Dauer','Puls','Notiz'],
+  ...getEntries().map(e=>[e.datum,e.druck,e.schwindel,(e.begleit||[]).join(', '),e.muedigkeit,e.periode,e.situation,e.dauer,e.puls,e.notiz])];
   const csv=rows.map(r=>r.map(v=>`"${String(v||'').replaceAll('"','""')}"`).join(';')).join('\n');
   const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});
-  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
-  a.download='Chiara_Symptomtagebuch.csv'; a.click(); URL.revokeObjectURL(a.href);
-});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Chiara_Symptomtagebuch.csv';a.click();URL.revokeObjectURL(a.href);
+};
 
-document.getElementById('share').addEventListener('click',async()=>{
-  const e=getEntries().at(-1);
-  if(!e){alert('Noch kein Eintrag vorhanden.');return}
-  const text=`Chiara – Symptomtagebuch\n${e.datum}\nBrustdruck: ${e.druck||'–'}\nBegleitsymptome: ${(e.begleit||[]).join(', ')||'–'}\nSituation: ${e.situation||'–'}\nDauer: ${e.dauer||'–'}\nPuls: ${e.puls||'–'}\nNotiz: ${e.notiz||'–'}`;
-  if(navigator.share){await navigator.share({title:'Symptomtagebuch',text})}
-  else{await navigator.clipboard.writeText(text);alert('Eintrag wurde kopiert.')}
-});
+document.getElementById('share').onclick=async()=>{
+  const e=getEntries().at(-1); if(!e){alert('Noch kein Eintrag vorhanden.');return}
+  const text=`Chiara – Symptomtagebuch\n${e.datum}\nBrustdruck: ${e.druck}/10\nSchwindel: ${e.schwindel||'–'}\nBegleitsymptome: ${(e.begleit||[]).join(', ')||'–'}\nMüdigkeit: ${e.muedigkeit||'–'}/10\nPeriode: ${e.periode||'–'}\nSituation: ${e.situation||'–'}\nDauer: ${e.dauer||'–'}\nPuls: ${e.puls||'–'}\nNotiz: ${e.notiz||'–'}`;
+  if(navigator.share) await navigator.share({title:'Symptomtagebuch',text}); else {await navigator.clipboard.writeText(text);alert('Eintrag kopiert.')}
+};
 
-document.getElementById('clear').addEventListener('click',()=>{
-  if(confirm('Wirklich alle Einträge löschen?')){
-    localStorage.removeItem('chiaraEntriesV2'); render();
-  }
-});
+async function shareText(text,title){
+  if(navigator.share) await navigator.share({title,text}); else {await navigator.clipboard.writeText(text);alert('Text kopiert.')}
+}
+document.getElementById('copyReport').onclick=async()=>{await navigator.clipboard.writeText(makeReport());alert('Bericht kopiert.')};
+document.getElementById('shareReport').onclick=()=>shareText(makeReport(),'Arztbericht Chiara');
 
-render();
+document.getElementById('clear').onclick=()=>{
+  if(confirm('Wirklich alle Einträge löschen?')){localStorage.removeItem(KEY);renderAll()}
+};
+
 if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
 </script>
 </body>

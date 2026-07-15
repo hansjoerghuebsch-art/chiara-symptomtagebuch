@@ -1,0 +1,15 @@
+UPDATE AUF VERSION 3
+
+1. ZIP-Datei entpacken.
+2. Im GitHub-Repository chiara-symptomtagebuch auf Add file > Upload files gehen.
+3. Diese fünf Dateien hochladen:
+   - index.html
+   - manifest.webmanifest
+   - sw.js
+   - icon-192.png
+   - icon-512.png
+4. Unten auf Commit changes tippen.
+5. Etwa 1–2 Minuten warten.
+6. App öffnen und einmal vollständig neu laden.
+
+Die bisherigen Einträge aus Version 2 werden beim ersten Start automatisch übernommen.
