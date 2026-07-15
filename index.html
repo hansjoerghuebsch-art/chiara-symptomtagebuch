@@ -62,8 +62,11 @@ canvas{width:100%;height:230px;background:#fff;border-radius:14px}
 
 <div class="card">
 <span class="label">Datum und Uhrzeit</span>
-<input id="zeitpunkt" type="datetime-local">
-<div class="hint">Aktuelles Datum und aktuelle Uhrzeit sind voreingestellt und können geändert werden.</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+<input id="datum" type="date">
+<input id="uhrzeit" type="time">
+</div>
+<div class="hint">Beides ist vorbelegt und kann jederzeit geändert werden.</div>
 </div>
 
 <div class="card">
@@ -194,7 +197,9 @@ function toLocalInputValue(date){
   return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }
 function setCurrentDateTime(){
-  document.getElementById('zeitpunkt').value=toLocalInputValue(new Date());
+ const d=new Date();
+ document.getElementById('datum').value=d.toISOString().slice(0,10);
+ document.getElementById('uhrzeit').value=d.toTimeString().slice(0,5);
 }
 setCurrentDateTime();
 
@@ -270,8 +275,9 @@ function resetForm(){
 }
 
 document.getElementById('save').onclick=()=>{
-  const raw=document.getElementById('zeitpunkt').value;
-  const chosen=raw?new Date(raw):new Date();
+  const dv=document.getElementById('datum').value;
+  const tv=document.getElementById('uhrzeit').value||'00:00';
+  const chosen=(dv?new Date(dv+'T'+tv):new Date());
   const e={
     datum:chosen.toLocaleString('de-DE'),
     timestamp:chosen.getTime(),
