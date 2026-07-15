@@ -1,5 +1,12 @@
-UPDATE AUF VERSION 3
+UPDATE AUF VERSION 4
 
+Neu:
+- Datum und Uhrzeit sind beim Öffnen automatisch aktuell voreingestellt.
+- Datum und Uhrzeit können vor dem Speichern geändert werden.
+- Nachträgliche Einträge werden chronologisch einsortiert.
+- Einträge aus Version 3 werden automatisch übernommen.
+
+Installation:
 1. ZIP-Datei entpacken.
 2. Im GitHub-Repository chiara-symptomtagebuch auf Add file > Upload files gehen.
 3. Diese fünf Dateien hochladen:
@@ -11,5 +18,3 @@ UPDATE AUF VERSION 3
 4. Unten auf Commit changes tippen.
 5. Etwa 1–2 Minuten warten.
 6. App öffnen und einmal vollständig neu laden.
-
-Die bisherigen Einträge aus Version 2 werden beim ersten Start automatisch übernommen.

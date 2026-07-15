@@ -27,7 +27,7 @@ h1{font-size:28px;margin:6px 0 2px}.sub{color:#666;margin-bottom:16px}
 .choice.active{border:2px solid #111;background:#eef0f3;font-weight:800}
 .scale{display:grid;grid-template-columns:repeat(6,1fr);gap:7px}
 .scale .choice{padding:11px 3px}
-textarea,input,select{width:100%;font:inherit;border:1px solid #d8dce2;border-radius:14px;padding:12px;background:#fff}
+textarea,input{width:100%;font:inherit;border:1px solid #d8dce2;border-radius:14px;padding:12px;background:#fff}
 textarea{min-height:86px;resize:vertical}
 .primary,.secondary,.danger{width:100%;border-radius:16px;padding:15px;font-size:17px}
 .primary{border:0;background:#111;color:#fff;font-weight:850}
@@ -43,6 +43,7 @@ textarea{min-height:86px;resize:vertical}
 .metric strong{font-size:24px;display:block}
 canvas{width:100%;height:230px;background:#fff;border-radius:14px}
 .report{white-space:pre-wrap;background:#f5f6f8;border-radius:14px;padding:14px;font-size:14px;line-height:1.45}
+.hint{font-size:13px;color:#666;margin-top:8px}
 @media(max-width:430px){.scale{grid-template-columns:repeat(3,1fr)}}
 </style>
 </head>
@@ -58,6 +59,12 @@ canvas{width:100%;height:230px;background:#fff;border-radius:14px}
 </div>
 
 <section class="panel active" id="neu">
+
+<div class="card">
+<span class="label">Datum und Uhrzeit</span>
+<input id="zeitpunkt" type="datetime-local">
+<div class="hint">Aktuelles Datum und aktuelle Uhrzeit sind voreingestellt und können geändert werden.</div>
+</div>
 
 <div class="card">
 <span class="label">Brustdruck (0–10)</span>
@@ -179,14 +186,25 @@ Die Daten bleiben nur auf diesem Gerät gespeichert. Bei Ohnmacht, anhaltendem B
 </main>
 
 <script>
-const KEY='chiaraEntriesV3';
+const KEY='chiaraEntriesV4';
 const state={begleit:[]};
+
+function toLocalInputValue(date){
+  const pad=n=>String(n).padStart(2,'0');
+  return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+function setCurrentDateTime(){
+  document.getElementById('zeitpunkt').value=toLocalInputValue(new Date());
+}
+setCurrentDateTime();
 
 function migrate(){
   if(localStorage.getItem(KEY)) return;
-  const old=JSON.parse(localStorage.getItem('chiaraEntriesV2')||'[]');
-  if(old.length){
-    const converted=old.map(e=>({
+  const old3=JSON.parse(localStorage.getItem('chiaraEntriesV3')||'[]');
+  if(old3.length){localStorage.setItem(KEY,JSON.stringify(old3));return}
+  const old2=JSON.parse(localStorage.getItem('chiaraEntriesV2')||'[]');
+  if(old2.length){
+    const converted=old2.map(e=>({
       datum:e.datum,
       timestamp:Date.parse(e.datum)||Date.now(),
       druck:({Kein:0,Leicht:2,Mittel:6,Stark:10}[e.druck]??e.druck??0),
@@ -248,12 +266,15 @@ function resetForm(){
   document.getElementById('puls').value='';
   document.getElementById('notiz').value='';
   Object.keys(state).forEach(k=>delete state[k]); state.begleit=[];
+  setCurrentDateTime();
 }
 
 document.getElementById('save').onclick=()=>{
+  const raw=document.getElementById('zeitpunkt').value;
+  const chosen=raw?new Date(raw):new Date();
   const e={
-    datum:new Date().toLocaleString('de-DE'),
-    timestamp:Date.now(),
+    datum:chosen.toLocaleString('de-DE'),
+    timestamp:chosen.getTime(),
     druck:Number(state.druck??0),
     schwindel:state.schwindel||'',
     begleit:state.begleit||[],
@@ -264,7 +285,7 @@ document.getElementById('save').onclick=()=>{
     puls:document.getElementById('puls').value.trim(),
     notiz:document.getElementById('notiz').value.trim()
   };
-  const entries=getEntries(); entries.push(e); setEntries(entries);
+  const entries=getEntries(); entries.push(e); entries.sort((a,b)=>(a.timestamp||0)-(b.timestamp||0)); setEntries(entries);
   resetForm(); renderAll();
   const ok=document.getElementById('ok'); ok.style.display='block';
   setTimeout(()=>ok.style.display='none',1700);
